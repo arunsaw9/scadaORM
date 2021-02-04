@@ -39,8 +39,8 @@
                                 @csrf
 
                                 <div class="form-group">
-                                    <label for="signin-email" class="control-label sr-only">Email</label>
-                                    <input type="email" class="form-control" id="email" :value="old('email')" name="email" placeholder="Email" required autofocus />
+                                    <label for="signin-email" class="control-label sr-only">CPF NO</label>
+                                    <input type="text" class="form-control" id="CPF_NO" :value="old('CPF_NO')" name="CPF_NO" placeholder="CPF NO" required autofocus />
                                 </div>
 
                                <div class="form-group">

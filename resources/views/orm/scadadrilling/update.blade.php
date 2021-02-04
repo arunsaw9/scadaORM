@@ -9,7 +9,23 @@
 			<div class="panel panel-headline">
 				<div class="panel-heading">
 					<h3 class="panel-title">Production Server Status Data Entry Sheet</h3>
-					@include('orm.includes.error')
+					@if(\Session::has('success'))
+						<div class="alert alert-success">
+							<ul>
+								<li>{!! \Session::get('success') !!}</li>
+							</ul>
+						</div>
+					@endif
+
+					@if($errors->any())
+						<div class="alert alert-danger">
+							<ul>
+								@foreach($errors->all() as $error)
+									<li>{{ $error }}</li>
+								@endforeach
+							</ul>
+						</div>
+					@endif
 					{{-- <p class="panel-subtitle">Period: Oct 14, 2016 - Oct 21, 2016</p> --}}
 				</div>
 				<hr>
@@ -80,9 +96,9 @@
 							<div class="col-md-6">
 								<div class="form-group">
 								    <label for="name" style="margin-left: 1%;">Asset</label>
-								    <select class="form-control" name="asset" id="asset_id">
+								    <select class="form-control" name="asset_id" id="asset_id">
 					                   	@foreach($asset as $assets)
-					                    <option value="{{ $assets->asset}}" data-id="{{ $assets->id}}">{{ $assets->asset }}</option>
+					                    <option value="{{ $assets->id}}">{{ $assets->asset }}</option>
 					                    @endforeach
 					                </select>
 								</div>
@@ -211,7 +227,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
 								    <label for="authorised" style="margin-left: 1%;">Remarks for PSA, PSB & Replication</label>
-								    <select class="form-control" name="remarks1" id="remarks1">
+								    <select class="form-control" name="remarks1[]" id="remarks1" multiple="">
 				                        <option value="" selected="">No Selection</option>
 				                        <option>Raw Power Failure</option>
 				                        <option>UPS Failure</option>
@@ -232,7 +248,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
 								    <label for="password" style="margin-left: 1%;">Remarks for BWA/MW, C-SCPC, L-L, Gateway, Ku</label>
-								    <select class="form-control" name="remarks2" id="remarks2" >
+								    <select class="form-control" name="remarks2[]" id="remarks2" multiple="">
 				                        <option value="" selected="">No Selection</option>
 				                        <option>Lease-line Issue</option>
 				                        <option>BWA Issue</option>

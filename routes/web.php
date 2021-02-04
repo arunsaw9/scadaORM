@@ -23,7 +23,9 @@ Route::get('/', function () {
 // });
 
 Route::resource('/scadaproduction', 'ScadaProductionController');
-
+Route::resource('/scadadrilling', 'ScadaDrillingController');
+Route::resource('/user', 'UserRegistrationController');
+Route::post('/subasset/{id}', 'OrmController@subasset');
 Route::view('/admin', 'orm.index');
 
 

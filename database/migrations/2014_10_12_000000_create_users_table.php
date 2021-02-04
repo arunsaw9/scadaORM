@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('DESIGNATION');
             $table->string('SECTION');
-            $table->integer('LOCATION_ID');
+            //$table->integer('LOCATION_ID');
             $table->string('ASSET');
             $table->string('ROLE');
             $table->enum('AUTHORISED', ['Y', 'N']);

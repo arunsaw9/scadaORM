@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ScadaProduction extends Model
 {
     use HasFactory;
+
+    //protected $casts = ['remarks1' => 'array', 'remarks2' => 'array'];
+
 }

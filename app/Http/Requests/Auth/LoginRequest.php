@@ -29,7 +29,8 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email',
+            //'email' => 'required|string|email',
+            'CPF_NO' => 'required',
             'password' => 'required|string',
         ];
     }
@@ -45,14 +46,23 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->filled('remember'))) {
+        if (! Auth::attempt($this->only('CPF_NO', 'password'), $this->filled('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'CPF_NO' => __('auth.failed'),
             ]);
         }
 
+        // if (Auth::attempt($this->only(['CPF_NO', 'password']))) {
+
+        //         // Returns \App\User model configured in `config/auth.php`.
+        //         $user = Auth::user();
+        //         dump($user);
+        //         dd('Logged in!');
+        // }
+
+        
         RateLimiter::clear($this->throttleKey());
     }
 
@@ -74,7 +84,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'CPF_NO' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -91,3 +101,4 @@ class LoginRequest extends FormRequest
         return Str::lower($this->input('email')).'|'.$this->ip();
     }
 }
+

@@ -1,8 +1,8 @@
 
 
 	<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="brand">
-				<a href="index.html"><img src="assets/img/logo-dark.png" alt="Klorofil Logo" class="img-responsive logo"></a>
+			<div class="brand" style="padding: 10px;margin-left: 15px;">
+				<a href="index.html"><img src="{{ asset('backend/img/ongc1.png') }}" alt="Klorofil Logo" class="img-responsive logo"></a>
 			</div>
 			<div class="container-fluid">
 				<div class="navbar-btn">
@@ -24,7 +24,7 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ asset('backend/img/user.png') }}" class="img-circle" alt="Avatar"> <span>{{ Auth::user()->name }}</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
 							<ul class="dropdown-menu" style="    min-width: 110px;">
 								<!-- <li><a href="#"><i class="lnr lnr-user"></i> <span>My Profile</span></a></li -->
-								<li><a href="{{ route('dashboard') }}"><i class="lnr lnr-envelope"></i> <span>Message</span></a></li> 
+							
 								<li>
 									@if (Route::has('password.request'))
 									    <a href="{{ route('password.request') }}">

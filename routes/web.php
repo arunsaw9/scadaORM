@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 // Route::prefix('admin')->group(function () {
@@ -22,11 +22,47 @@ Route::get('/', function () {
 //     Route::resource('/registration', 'UserRegistrationController')->middleware('auth');
 // });
 
-Route::resource('/scadaproduction', 'ScadaProductionController');
-Route::resource('/scadadrilling', 'ScadaDrillingController');
+Route::get('/ldap', 'UserRegistrationController@mytest');
+
+
+Route::group(['middleware' => ['role:Admin|user-edit']], function () {
+    
+});
+
+Route::resource('/roles', 'RoleController');
+Route::resource('/permission', 'PermissionController');
 Route::resource('/user', 'UserRegistrationController');
+
+Route::resource('/scadaproduction', 'ScadaProductionController');
+
+Route::get('/ReportsProd', 'ScadaProductionController@ProductionReports');
+Route::post('/ReportsProd', 'ScadaProductionController@ReportsProd')->name('production.reports');
+
+Route::get('/LocalReportProd', 'ScadaProductionController@LocalReportProd')->name('LocalReport');
+Route::post('/LocalReportProd/', 'ScadaProductionController@LocalReportProdData')->name('LocalReport.post');
+//Route::post('/LocalReportProd/{val1}/{val2}', 'ScadaProductionController@LocalReportProdData');
+
+Route::post('/view-data', 'ScadaProductionController@PreviousData')->name('previous.data');
+
+Route::post('/copy-data', 'ScadaProductionController@Copydata')->name('copy.data');
+
+
+
+Route::resource('/scadadrilling', 'ScadaDrillingController');
+
+Route::post('/DrillSearchReports', 'ScadaDrillingController@drilreports')->name('drilreports');
+
+Route::post('/drildata-copy', 'ScadaDrillingController@drilDataCopy')->name('drildata.copy');
+
+Route::get('/LocalDrillReport', 'ScadaDrillingController@DrillReports')->name('scada.drilling');
+Route::post('/LocalDrillReport', 'ScadaDrillingController@DrillReportshow')->name('drill.reports');
+
+
 Route::post('/subasset/{id}', 'OrmController@subasset');
+Route::post('/dril-subasset/{id}', 'OrmController@drilSubasset');
+
 Route::view('/admin', 'orm.index');
+
 
 
 Route::get('/dashboard', function () {
@@ -34,3 +70,5 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
+
+

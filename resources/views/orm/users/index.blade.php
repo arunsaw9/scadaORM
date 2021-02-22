@@ -35,11 +35,10 @@
 										<th>CPF NO</th>
 										<th>Name</th>
 										<th>Email</th>
-										<th>Desination</th>
+										<th>Designation</th>
 										<th>Section</th>
 										<th>Asset</th>
 										<th>Role</th>
-										<th>Authorised BY</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -53,12 +52,17 @@
 										<td>{{ $users->DESIGNATION }}</td>
 										<td>{{ $users->SECTION }}</td>
 										<td>{{ $users->ASSET }}</td>
-										<td>{{ $users->ROLE }}</td>
-										<td>{{ $users->AUTHORISED_BY }}</td>
+										<td>
+											@if(!empty($users->getRoleNames()))
+										       @foreach($users->getRoleNames() as $v)
+										          <label class="badge badge-success">{{ $v }}</label>
+										       @endforeach
+										     @endif
+										</td>
 										<td>
 											<a href="{{ route('user.edit', $users->id) }}" class="btn btn-info"><span class="lnr lnr-pencil"></span></a>
-											<a href="#" class="btn btn-remove"><span class="lnr lnr-trash"></span></a>
-
+											
+											<a href="#" class="btn btn-danger"><span class="lnr lnr-trash"></span></a>
 										</td>
 									</tr>
 									@endforeach

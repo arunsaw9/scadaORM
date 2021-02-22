@@ -18,7 +18,7 @@
 				<div class="col-md-12">
 					<div class="panel">
 					<div class="panel-heading">
-						<h3 style="padding-left: 10px; font-weight: 600;">Producton SCADA Server Status</h3>
+						<h3 style="padding-left: 10px; font-weight: 600;">Producton SCADA Server Status Reports :LocalReportProd</h3>
 						<div class="right">
 							<button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
 							<button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
@@ -27,27 +27,32 @@
 					<hr>
 
 					<div class="panel-body">
-						<form action="#">
+						<form action="{{ route('LocalReport.post') }}" method="post">
+							@csrf
 							<div class="col-md-6">
 								<div class="form-group">
-								    <label for="selectdate">Select From-Date (Down Arrow at Right)</label>
-								    <input type="date" class="form-control">
-								    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-								  </div>
+								    <label for="date">Select From-Date (Down Arrow at Right)</label>
+								    <input type="date" name="date" id="LocalReportDate" class="form-control" required autofocus>
+								    <small id="" class="form-text text-muted">*From-Date is required</small>
+								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 								    <label for="selectlocation">Select Location from the List</label>
-								    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-								    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+				    			    <select class="form-control" id="location" name="location">
+				                        <option>All</option>
+				                        @foreach($asset as $assets)
+				                        <option value="{{ $assets->asset}}" data-id="{{ $assets->id}}">{{ $assets->asset }}</option>
+				                        @endforeach
+				                    </select>
 								  </div>
 							</div>
 							<div class="col-md-6">
 								
 							</div>
-							<div class="col-md-6 text-right"><a href="#" class="btn btn-primary">View All Purchases</a></div>
+							<div class="col-md-6 text-right">
+								<button type="submit" id="LocalReportSubmit" class="btn btn-primary">Submit</button> 
 						</form>
-
 						
 					</div>
 					
@@ -59,95 +64,7 @@
 
 
 
-			<div class="row">
-				<div class="col-md-12">
-					<!-- BORDERED TABLE -->
-					<div class="panel">
-						<div class="col-md-6">
-							<a href="#" class="btn btn-default" style="margin:10px 10px;">Export to Excel</a>
-						</div><!-- 
-						<div class="panel-heading">
-							<h3 class="panel-title">Bordered Table</h3>
-						</div> -->
-						<br>
-						<div class="panel-body">
-							<table class="table table-bordered">
-								<thead  class="thead-light">
-									<tr>
-										<th>#</th>
-										<th>First Name</th>
-										<th>Last Name</th>
-										<th>Username</th>
-										<th>#</th>
-										<th>First Name</th>
-										<th>Last Name</th>
-										<th>Username</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>1</td>
-										<td>Steve</td>
-										<td>Jobs</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-									</tr>
-									<tr>
-										<td>1</td>
-										<td>Steve</td>
-										<td>Jobs</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-									</tr>
-									<tr>
-										<td>1</td>
-										<td>Steve</td>
-										<td>Jobs</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-									</tr>
-									<tr>
-										<td>1</td>
-										<td>Steve</td>
-										<td>Jobs</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-										<td>@steve</td>
-									</tr>
-									<tr>
-									      <th scope="row">TOTAL</th>
-									      {{-- <td colspan="2">66</td> --}}
-									      <td>98</td>
-									      <td>66</td>
-									      <td>66</td>
-									      <td>67</td>
-									</tr>
-									<tr>
-									      <th scope="row">OK</th>
-									      <td>43</td>
-									      <td>95</td>
-									      <td>96</td>
-									      <td>97</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<!-- END BORDERED TABLE -->
-				</div>
-				
-			</div>
+			
 		</div>
 	</div>
 	<!-- END MAIN CONTENT -->

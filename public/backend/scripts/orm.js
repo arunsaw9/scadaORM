@@ -2,10 +2,8 @@
 $(document).ready(function(){
     //------------------- fetch subAssets ---------------
     $("#asset_id").change(function(){
-        //var assetid = $("#asset_id").val();
         var assetid = $(this).find('option:selected');
         var extra = assetid.data('id');
-        alert(extra);
         if( extra !="" ) {
             var token = $('meta[name="csrf-token"]').attr('content');
             var url = '/subasset/' + extra;
@@ -71,7 +69,82 @@ $(document).ready(function(){
             });
 
         }
-
     });
 
+    //-------------------------Drilling Scada-----------------------------
+    
+    $("#dril_asset_id").change(function(){
+        //var dril_subasset_id = $('#dril_asset_id').val();
+        var drilassetid = $(this).find('option:selected');
+        var dril_subasset_id = drilassetid.data('id');
+
+        if (dril_subasset_id != '') {
+            var token = $('meta[name="csrf-token"]').attr('content');
+            var url = '/dril-subasset/' + dril_subasset_id;
+            $.ajax({
+                method:'POST',
+                header:{
+                  'X-CSRF-TOKEN': token
+                },
+                url: url,
+                data:{
+                  _token: token,
+                  dataType: 'json', 
+                  contentType:'application/json',
+                  id: dril_subasset_id,
+                }        
+            })
+            .done(function(data){
+                $('#drilsubasset').empty();
+                for(var i in data){
+                    $('#drilsubasset').append('<option value="'+data[i].location+'">'+data[i].location+'</option>');
+                }
+            })
+            .fail(function(response){
+                alert('Error: ' + response);
+            })
+        }
+    });
+
+
+    //--------------------------LocalReportProd---------------------------
+
+    // $("#LocalReportSubmit").click(function(e){
+    //     e.preventDefault();
+    //     var LocalReportDate = $('#LocalReportDate').val();
+    //     var asset_location = $('#location :selected').text();
+    //     //alert('sdfsf' + LocalReportDate);
+
+
+    //     if (LocalReportDate != '' && asset_location != '') {
+
+    //         var token = $('meta[name="csrf-token"]').attr('content');
+    //         var url = '/LocalReportProd/' + asset_location + '/' + LocalReportDate;
+    //         $.ajax({
+    //             method:'POST',
+    //             header:{
+    //               'X-CSRF-TOKEN': token
+    //             },
+    //             url: url,
+    //             data:{
+    //               _token: token,
+    //               dataType: 'json', 
+    //               contentType:'application/json',
+    //               val1: asset_location,
+    //               val2: LocalReportDate,
+    //             }        
+    //         })
+    //         .done(function(data){
+    //             alert('ok: ' + data);
+    //             // $('#drilsubasset').empty();
+    //             // for(var i in data){
+    //             //     $('#drilsubasset').append('<option value="'+data[i].location+'">'+data[i].location+'</option>');
+    //             // }
+    //         })
+    //         .fail(function(response){
+    //             alert('Error: ' + response);
+    //             console.log(response);
+    //         })
+    //     }
+    // });
 });

@@ -15,14 +15,14 @@ class CreateScadaProductionsTable extends Migration
     {
         Schema::create('scada_productions', function (Blueprint $table) {
             $table->id();
-            $table->integer('asset_id');
+            $table->string('asset');
             $table->string('subAsset');
             $table->string('primary_ip');
             $table->enum('primary_status', ['OK','NOK','NW','OFF','NA']);
             $table->string('secondary_ip');
             $table->enum('secondary_status', ['OK','NOK','NW','OFF','NA']);
             $table->enum('replication_status', ['OK','NOK','NW','OFF','NA']);
-            $table->string('remarks1');
+            $table->string('remarks1')->nullable();
             $table->string('BWA_IP');
             $table->enum('BWA_status', ['OK','NOK','NW','OFF','NA']);
             $table->string('VAST_IP');
@@ -33,7 +33,7 @@ class CreateScadaProductionsTable extends Migration
             $table->enum('switch_status', ['OK','NOK','NW','OFF','NA']);
             $table->string('others_IP');
             $table->enum('others_status', ['OK','NOK','NW','OFF','NA']);
-            $table->string('remarks2');
+            $table->string('remarks2')->nullable();
             $table->integer('updated_by');
             $table->timestamps();
         });

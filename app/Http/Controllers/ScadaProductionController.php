@@ -7,6 +7,9 @@ use App\Models\ScadaProduction;
 use App\Models\Asset;
 use App\Models\subAsset;
 use Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 class ScadaProductionController extends Controller
 {
     /**
@@ -14,14 +17,111 @@ class ScadaProductionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+         $this->middleware('auth');
+         $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','show']]);
+         $this->middleware('permission:role-create', ['only' => ['create','store']]);
+         $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+    }
+
+
     public function index()
     {
-
-
         $s_production = ScadaProduction::all();
         $styles = array("OK" => 'green', "NOK" => 'pink', "NA" => 'yellow', "OFF"=>'white');
-        //echo "<pre>";print_r($s_production->toArray());die;
         return view('orm.scadaproduction.index', compact('s_production', 'styles'));
+    }
+
+  
+
+    public function Copydata(Request $request){
+        $request->validate([
+            'copy_data' => 'required', 
+        ],
+        [
+            'copy_data.required' => 'Copy Date is required.', 
+        ]);
+
+        if(isset(Auth::user()->CPF_NO)){
+            $copyData = ScadaProduction::where('asset', Auth::user()->ASSET)
+                            ->whereDate('created_at', '=', date($request->copy_data))
+                            ->get();
+
+            
+            if ($copyData->count() != 0) {
+                $assets = array();
+
+                foreach ($copyData as $value) {
+                    $assets[] = $value->subAsset;
+                }
+
+                //------------------------Find duplicate entry-----------------------------------
+                $results = array();
+                $duplicates = array();
+                foreach ($assets as $item) {
+                    if (in_array($item, $results)) {
+                        $duplicates[] = $item;
+                    }
+                    $results[] = $item;
+                }
+
+                //----------------------------Insert data------------------------------
+                if(count($duplicates) == 0){
+                    foreach($copyData->toArray() as $data) {
+                        $data['updated_by'] = Auth::user()->CPF_NO;
+                        $data['remarks1'] = null;
+                        $data['remarks2'] = null;
+
+                        $data['created_at'] = carbon::now();
+                        $data['updated_at'] = carbon::now();
+                        unset($data['id']);
+                        ScadaProduction::create($data);
+                    }
+
+                   $message = count($assets).' Rows created successfully.';
+                }else{
+                    $message =  ' Found <span style="color:red">'.implode(',',$duplicates).'</span> duplicate input.';
+                }
+            }else{
+                 $message =  ' Date not matched.';
+            }
+            
+        }       
+
+        return redirect()->route('scadaproduction.index')->with('success', $message);
+
+    }
+
+
+
+
+    public function PreviousData(Request $request){
+
+        $request->validate([
+            'Previous_Date' => 'required', 
+        ],
+        [
+            'Previous_Date.required' => 'Previous Date is required.', 
+        ]);
+
+
+        $styles = array("OK" => 'green', "NOK" => 'pink', "NA" => 'yellow', "OFF"=>'white');
+        $date_loc = array('date'=>$request->Previous_Date);
+
+        $viewData = '';
+        if(isset(Auth::user()->ASSET)){
+            $viewData = ScadaProduction::where('asset', Auth::user()->ASSET)
+                            ->whereDate('created_at', '=', date($request->Previous_Date))
+                            ->get();
+        }
+        else{
+             $viewData = 'Input not matched.';
+        }
+
+        return view('orm.scadaproduction.view_data', compact('viewData','date_loc','styles'));
+
     }
 
     /**
@@ -60,8 +160,6 @@ class ScadaProductionController extends Controller
             // 'remarks2.*.required' => 'Remarks 2 is required.', 
         ]);
 
-
-
         //return $request->all();
         $store = new ScadaProduction;
         $store->asset            = $request->asset;
@@ -87,7 +185,7 @@ class ScadaProductionController extends Controller
         $store->updated_by          =  Auth::user()->CPF_NO;
 
         $store->save();
-        return redirect()->back()->with('success', 'Data inserted successfully.');
+        return redirect()->route('scadaproduction.index')->with('success', 'Data inserted successfully.');
     }
 
     /**
@@ -209,5 +307,147 @@ class ScadaProductionController extends Controller
         //
     }
 
+
+    public function LocalReportProd(){ 
+        $asset = Asset::all();
+        return view('orm.scadaproduction.localreports', compact('asset'));
+    }
+
+    public function LocalReportProdData(request $request){ 
+        //return $request->all();
+
+        $styles = array("OK" => 'green', "NOK" => 'pink', "NA" => 'yellow', "OFF"=>'white');
+
+        $date_loc = array('date'=>$request->date, 'location'=>$request->location);
+
+        $ProdData = '';
+
+        if($request->location == 'All'){
+            $ProdData = ScadaProduction::whereDate('created_at', '=', date($request->date))->get();
+           // echo 'all';return $ProdData;
+        }
+        else{
+            $ProdData = ScadaProduction::where('asset', $request->location)
+                            ->whereDate('created_at', '=', date($request->date))
+                            ->get();
+                           //echo 'single'; return $ProdData;
+        }
+        
+        return view('orm.scadaproduction.LocalReportProdData', compact('ProdData','date_loc','styles'));
+    }
+
+
+
+
+
+
+
+
+
+    public function ProductionReports(){
+        $asset = Asset::all();
+        return view('orm.scadaproduction.ReportsProd', compact('asset'));
+    }
+
+
+
+    public function ReportsProd(request $request){
+
+        //return $request->all();
+        $styles = array("OK" => 'green', "NOK" => 'pink', "NA" => 'yellow', "OFF"=>'white');
+
+        $date_loc = array('date'=>$request->date, 'location'=>$request->location);
+        $ReportsProd = '';
+        
+        if($request->location == 'All'){
+            $ProdData = ScadaProduction::whereDate('created_at', '=', date($request->date))->get();
+        }
+        else{
+            $ProdData = ScadaProduction::where('asset', $request->location)
+                            ->whereDate('created_at', '=', date($request->date))
+                            ->get();
+        }
+
+
+        $PSA = array();
+        $PSB = array();
+        $REPC = array();
+
+        $B_M = array();
+        $C_SC = array();
+        $LL = array();
+        $GWy = array();
+        $Ku = array();
+
+        $NA_count = count($ProdData);
+        
+        foreach ($ProdData as $value) {
+            $PSA[] = $value->primary_status;
+            $PSB[] = $value->secondary_status;
+            $REPC[] = $value->replication_status;
+
+            $B_M[] = $value->BWA_status;
+            $C_SC[] = $value->VAST_status;
+
+            $LL[] = $value->LL_status;
+            $GWy[] = $value->switch_status;
+            $Ku[] = $value->others_status;
+        }
+        $PSA       = array_count_values($PSA);         
+        $PSB      = array_count_values($PSB);         
+        $REPC        = array_count_values($REPC);   
+
+        $B_M        = array_count_values($B_M);         
+        $C_SC       = array_count_values($C_SC); 
+        $LL       = array_count_values($LL); 
+        $GWy       = array_count_values($GWy); 
+        $Ku       = array_count_values($Ku); 
+
+        //----------------------For OKs--------------------------------
+        $PSA_S      = isset($PSA['OK']) ? $PSA['OK'] : 0;
+        $PSB_S      = isset($PSB['OK']) ? $PSB['OK'] : 0;
+        $REPC_S      = isset($REPC['OK']) ? $REPC['OK'] : 0;
+
+        $B_M_S      = isset($B_M['OK']) ? $B_M['OK'] : 0;
+
+        $C_SC_S     = isset($C_SC['OK']) ? $C_SC['OK'] : 0;
+
+        $LL_S      = isset($LL['OK']) ? $LL['OK'] : 0;
+
+        $GWy_S     = isset($GWy['OK']) ? $GWy['OK'] : 0 ;
+        $Ku_S     = isset($Ku['OK']) ? $Ku['OK'] : 0;
+
+        //-----------------------For Total------------------------
+        $PSA_NA      = isset($PSA['NA']) ? $PSA['NA'] : 0;
+        $PSA_count = $NA_count - $PSA_NA;
+
+        $PSB_NA      = isset($PSB['NA']) ? $PSB['NA'] : 0;
+        $PSB_count = $NA_count - $PSB_NA;
+
+        $REPC_NA      = isset($REPC['NA']) ? $REPC['NA'] : 0;
+        $REPC_count = $NA_count - $REPC_NA;
+
+        $B_M_NA      = isset($B_M['NA']) ? $B_M['NA'] : 0;
+        $B_M_count = $NA_count - $B_M_NA;
+
+        $C_SC_NA      = isset($C_SC['NA']) ? $C_SC['NA'] : 0;
+        $C_SC_count = $NA_count - $C_SC_NA;
+
+        $LL_NA      = isset($LL['NA']) ? $LL['NA'] : 0;
+        $LL_count = $NA_count - $LL_NA;
+
+        $GWy_NA      = isset($GWy['NA']) ? $GWy['NA'] : 0;
+        $GWy_count = $NA_count - $GWy_NA;
+
+        $Ku_NA      = isset($Ku['NA']) ? $Ku['NA'] : 0;
+        $Ku_count = $NA_count - $Ku_NA;
+
+        $total = array($PSA_count, $PSB_count, $REPC_count, $B_M_count, $C_SC_count, $LL_count, $GWy_count, $Ku_count);
+        $ok = array($PSA_S, $PSB_S, $REPC_S, $B_M_S, $LL_S, $C_SC_S, $GWy_S, $Ku_S);
+
+        
+        return view('orm.scadaproduction.ReportsProduction', compact('ProdData','date_loc','styles','total','ok'));
+    }
+    
     
 }

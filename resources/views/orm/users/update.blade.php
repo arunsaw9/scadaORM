@@ -12,6 +12,7 @@
 					@include('orm.includes.error')
 
 				</div>
+
 				<hr>
 				<div class="panel-body"> 
 					<form action="{{ route('user.update', $update->id) }}" method="post">
@@ -58,12 +59,18 @@
 							<div class="col-md-6">
 								<div class="form-group">
 								    <label for="role" class="" style="margin-left: 1%;">Role</label>
-								     <select class="form-control" id="role" name="role">
-								        <option>Admin</option>
-								        <option>Scada</option>
-								        <option>Communication</option>
-								        <option>Instrumentation</option>
-								        <option>Scada & Communication</option>
+								    <!-- @if(!empty($update->getRoleNames()))
+				        				@foreach($update->getRoleNames() as $v)
+			        					@endforeach
+			        				@endif -->
+
+								    <select class="form-control" id="role" name="role[]" multiple>
+								        
+									@if(!empty($role))
+				        				@foreach($role as $roles)
+				        				<option value="{{ $roles->name }}">{{ $roles->name }}</option>
+			        					@endforeach
+			        				@endif
 								    </select>
 								</div>
 							</div>
@@ -83,29 +90,20 @@
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-								    <label for="Location_ID" class="" style="margin-left: 1%;">Location_ID</label>
-								    <input type="text" class="form-control" id="Location_ID" value="{{ $update->LOCATION_ID }}" name="Location_ID" required autofocus />
+								    <!-- <label for="Location_ID" class="" style="margin-left: 1%;">Location_ID</label>
+								    <input type="text" class="form-control" id="Location_ID" value="{{ $update->LOCATION_ID }}" name="Location_ID" required autofocus /> -->
 								</div>
 							</div>
 						</div>
 
 						<div class="row">
 							<div class="col-md-6">
-								<div class="form-group">
-								    <label for="authorised" class="" style="margin-left: 1%;">Authorised By</label>
-								    <input type="text" class="form-control" id="authorised" value="{{ $update->AUTHORISED_BY }}" name="authorised" required autofocus />
-								</div>
+								
 							</div>
 							<div class="col-md-6">
 								<br>	
 								<button type="submit" class="btn btn-primary pull-right">SUBMIT</button>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-4 col-md-offset-8">
-								
-							</div>
-							
 						</div>
 					</form>
 				</div>
@@ -113,4 +111,23 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+@section('scriptsection')
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
+	
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
+	<script>
+		$(document).ready(function() { 
+
+		    $('input').tagsinput({
+		      typeahead: {
+		        source: ['Amsterdam', 'Washington', 'Sydney', 'Beijing', 'Cairo'],
+		    		afterSelect: function() {
+		    			this.$element[0].value = '';
+		    		}
+		      }
+		    });
+		});
+	</script>
 @endsection

@@ -15,7 +15,16 @@ class OrmController extends Controller
 	    } catch (\Exception $e) {
 	        return response()->json(['message'=>'Data not found!'], 404);
 	    }
-
-    	
     }
+
+    public function drilSubasset(request $request){
+    	try{
+    		$drilsubasset = subAsset::where('asset_id', $request->id)->get();
+	        return \Response::json($drilsubasset, 200);
+    	}catch(\Exception $e){
+    		return response()->json(['message' => 'Data not found']);
+    	}
+    }
+
+
 }

@@ -12,10 +12,10 @@ class CreateUsersTable extends Migration
      * @return void
      */
     public function up()
-    {
+    { 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->integer('CPF_NO')->nullable();
+            $table->integer('CPF_NO');
             $table->string('name');
             $table->string('DESIGNATION');
             $table->string('SECTION');

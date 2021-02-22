@@ -9,20 +9,36 @@ use App\Models\Asset;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
+use Spatie\Permission\Traits\HasRoles;
+
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use DB;
+
 class UserRegistrationController extends Controller
 {
+    use HasRoles;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
+
+    public function index(Request $request)
     {
-         
-         //$user = Adldap::search()->users()->find('shree');
-         //echo "<pre>";print_r($user);die;
-        $user = User::all();
-        return view('orm.users.index', compact('user'));
+        $user = User::orderBy('id','DESC')->paginate(5);
+        return view('orm.users.index', compact('user'))->with('i', ($request->input('page', 1) - 1) * 5);;
+    }
+
+    public function mytest(){
+
+        $user = Adldap::search()->users()->find('arun');
+        echo "<pre>"; print_r($user);die;
     }
 
     /**
@@ -33,7 +49,8 @@ class UserRegistrationController extends Controller
     public function create()
     {
         $asset = Asset::all();
-        return view('orm.users.create', compact('asset'));
+        $roles = Role::all();
+        return view('orm.users.create', compact('asset', 'roles'));
     }
 
     /**
@@ -53,11 +70,11 @@ class UserRegistrationController extends Controller
             'section' => 'required',
             'role' => 'required',
             'asset' => 'required',
-            'Location_ID' => 'required',
-            'authorised' => 'required',
             'password' => 'required',
-            'asset' => 'required',
-            'Location_ID' => 'required',
+            //'Location_ID' => 'required',
+            //'authorised' => 'required',
+            
+            //'Location_ID' => 'required',
         ]);
 
         $user = new User;
@@ -65,18 +82,19 @@ class UserRegistrationController extends Controller
         $user->name             = $request->name;
         $user->DESIGNATION      = $request->degination;
         $user->SECTION          = $request->section;
-        $user->LOCATION_ID      = $request->Location_ID;
         $user->ASSET            = $request->asset;
-        $user->ROLE             = $request->role;
+        $user->ROLE             = json_encode($request->role);
         $user->email            = $request->email;
-        $user->password         = Hash::make($request->newPassword);
+        $user->password         = Hash::make($request->password);
+        
+        //$user->LOCATION_ID      = '123';//$request->Location_ID;
         $user->WEF_DATE         = 'test';//$request->cpf_no;
         $user->AUTHORISED       = 'Y';//$request->Authorised;
-        $user->AUTHORISED_BY    = $request->authorised;
+        $user->AUTHORISED_BY    = 'DFD';//$request->authorised;
         $user->DELETED_BY       = 'del';//$request->cpf_no;
-        $user->email            = $request->email;
 
         $user->save();
+        $user->assignRole($request->role);
         return redirect('/user')->with('status', 'Profile Created!');
     }
 
@@ -100,8 +118,13 @@ class UserRegistrationController extends Controller
     public function edit($id)
     {
         $update = User::findOrFail($id);
+
+        $roles = Role::pluck('name','name')->all();
+        $userRole = $update->roles->pluck('name','name')->all();
+
+         $role = Role::all();
         $asset = Asset::all();
-        return view('orm.users.update', compact('update', 'asset'));
+        return view('orm.users.update', compact('update', 'role', 'asset','roles','userRole'));
     }
 
     /**
@@ -121,10 +144,10 @@ class UserRegistrationController extends Controller
             'section' => 'required',
             'role' => 'required',
             'asset' => 'required',
-            'Location_ID' => 'required',
-            'authorised' => 'required',
-            'asset' => 'required',
-            'Location_ID' => 'required',
+            //'Location_ID' => 'required',
+            //'authorised' => 'required',
+            
+            //'Location_ID' => 'required',
         ]);
 
         $updateuser = User::find($id);
@@ -132,17 +155,21 @@ class UserRegistrationController extends Controller
         $updateuser->name             = $request->name;
         $updateuser->DESIGNATION      = $request->degination;
         $updateuser->SECTION          = $request->section;
-        $updateuser->LOCATION_ID      = $request->Location_ID;
+        //$updateuser->LOCATION_ID      = $request->Location_ID;
         $updateuser->ASSET            = $request->asset;
         $updateuser->ROLE             = $request->role;
         $updateuser->email            = $request->email;
+
         $updateuser->WEF_DATE         = 'test';//$request->cpf_no;
         $updateuser->AUTHORISED       = 'Y';//$request->Authorised;
-        $updateuser->AUTHORISED_BY    = $request->authorised;
+        $updateuser->AUTHORISED_BY    = 'DFDS';//$request->authorised;
         $updateuser->DELETED_BY       = 'del';//$request->cpf_no;
-        $updateuser->email            = $request->email;
-
         $updateuser->save();
+
+        DB::table('model_has_roles')->where('model_id',$id)->delete();
+    
+        $updateuser->assignRole($request->role);
+
         return redirect('/user')->with('success', 'User Updated successfully !');
     }
 
@@ -154,6 +181,8 @@ class UserRegistrationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::find($id)->delete();
+        return redirect()->route('user.index')
+                        ->with('success','User deleted successfully');
     }
 }

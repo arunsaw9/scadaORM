@@ -74,15 +74,22 @@
 							<table class="table table-bordered">
 								<thead  class="thead-light">
 									<tr>
-										<th>#</th>
-										<th>First Name</th>
-										<th>Last Name</th>
-										<th>Username</th>
-										<th>#</th>
-										<th>First Name</th>
-										<th>Last Name</th>
-										<th>Username</th>
-									</tr>
+						                <th scope="col">AssetID</th>
+						                <th scope="col">Installation-Id..</th>
+						                <th scope="col">PSA</th>
+						                <th scope="col">PSB</th>
+						                <th scope="col">REPC</th>
+						                <th scope="col">Remarks..</th>
+						                <th scope="col">B/M</th>
+						                <th scope="col">C-SC</th>
+						                <th scope="col">LL.</th>
+						                <th scope="col">GWy.</th>
+						                <th scope="col">Ku.</th>
+						                <th scope="col">Remarks....</th>
+						                <th scope="col">Time.....</th>
+						                <th scope="col">Date......</th>
+						                <th scope="col">UpdatedBy</th>
+						            </tr>
 								</thead>
 								<tbody>
 									<tr>

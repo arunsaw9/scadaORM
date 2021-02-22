@@ -56,12 +56,14 @@
 							<div class="col-md-6">
 								<div class="form-group">
 								    <label for="role" class="" style="margin-left: 1%;">Role</label>
-								     <select class="form-control" id="role" name="role">
-								        <option>Admin</option>
-								        <option>Scada</option>
+								     <select class="form-control" id="role" name="role[]" multiple>
+								     	@foreach($roles as $role)
+								        <option value="{{ $role->name }}">{{$role->name }}</option>
+								        @endforeach
+								       <!--option>Scada</option>
 								        <option>Communication</option>
 								        <option>Instrumentation</option>
-								        <option>Scada & Communication</option>
+								        <option>Scada & Communication</option-->}}
 								    </select>
 								</div>
 							</div>
@@ -81,8 +83,12 @@
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-								    <label for="Location_ID" class="" style="margin-left: 1%;">Location_ID</label>
-								    <input type="text" class="form-control" id="Location_ID" name="Location_ID" placeholder="Location_ID" required autofocus />
+									<div class="form-group">
+								    <label for="password" class="" style="margin-left: 1%;">Password</label>
+								    <input type="password" class="form-control" id="password" value="{{ old('password') }}" name="password" placeholder="Password" required autofocus />
+								</div>
+								    <!-- <label for="Location_ID" class="" style="margin-left: 1%;">Location_ID</label>
+								    <input type="text" class="form-control" id="Location_ID" name="Location_ID" placeholder="Location_ID" required autofocus /> -->
 								</div>
 							</div>
 						</div>
@@ -90,15 +96,15 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-								    <label for="authorised" class="" style="margin-left: 1%;">Authorised By</label>
-								    <input type="text" class="form-control" id="authorised" value="{{ old('authorised') }}" name="authorised" placeholder="Authorised" required autofocus />
+								    <!-- <label for="authorised" class="" style="margin-left: 1%;">Authorised By</label>
+								    <input type="text" class="form-control" id="authorised" value="{{ old('authorised') }}" name="authorised" placeholder="Authorised" required autofocus /> -->
 								</div>
 							</div>
 							<div class="col-md-6">
-								<div class="form-group">
+								<!-- <div class="form-group">
 								    <label for="password" class="" style="margin-left: 1%;">Password</label>
 								    <input type="password" class="form-control" id="password" value="{{ old('password') }}" name="password" placeholder="Password" required autofocus />
-								</div>
+								</div> -->
 							</div>
 						</div>
 						<div class="row">

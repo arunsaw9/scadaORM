@@ -311,7 +311,7 @@
 							
 						</div>
 
-						
+						<input type="hidden" name="created_at" value="{{ $edits->created_at }}">
 						<div class="row">
 							<div class="col-md-4 col-md-offset-8">
 								<button type="submit" class="btn btn-primary btn-block">SUBMIT</button>

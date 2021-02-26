@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ScadaDrilling;
 use App\Models\Asset;
+use App\Models\UserActivity;
 use Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Session;
 
 class ScadaDrillingController extends Controller
 {
@@ -22,6 +24,9 @@ class ScadaDrillingController extends Controller
     
     public function index()
     { 
+// $comment = ScadaDrilling::find(4)->activities;
+// echo "<pre>";print_r($comment->toArray());die;
+
         $asset = Asset::all();
         $drilling = ScadaDrilling::all();
         $styles = array("OK" => 'green', "NOK" => 'pink', "NA" => 'yellow', "OFF"=>'white');
@@ -143,7 +148,7 @@ class ScadaDrillingController extends Controller
             // 'remarks3'       => 'required',
         ]);
 
-        $update = ScadaDrilling::find($id);
+        $update = ScadaDrilling::find($id);  
       
         $update->DSA_STATUS              = $request->PrimaryStatus;
         $update->DSB_STATUS              = $request->SecondaryStatus;
@@ -156,9 +161,20 @@ class ScadaDrillingController extends Controller
         $update->REMARKS1                = $request->remarks1;
         $update->REMARKS2                = $request->remarks2;
         $update->REMARKS3                = $request->remarks3;
-        $update->save();
+        
+        if ($update->save()) {
+            $User_Act = new UserActivity;
+            $User_Act->drilling_id = $id;
+            $User_Act->cpf_no = Auth::user()->CPF_NO;
+            $User_Act->scadaDate = $request->created_at;
+            $User_Act->save();
+            $message = 'Data Updated successfully.';
+        }else{
+            $message = 'Data not Updated.';
+        }
 
-        return redirect()->route('scadadrilling.index')->with('success', 'Data Updated successfully.');
+        
+        return redirect()->route('scadadrilling.index')->with('success', $message);
     }
 
     /**
@@ -179,6 +195,7 @@ class ScadaDrillingController extends Controller
 
      //===================================Copy Drill Data ==================================
     public function drilreports(Request $request){
+        
         $asset = Asset::all();
          $search = array('date'=>$request->dril_date, 'location'=>$request->search_location);
         $searchresults = '';
@@ -261,6 +278,9 @@ class ScadaDrillingController extends Controller
 
     public function DrillReportshow(Request $request){
 
+        Session::put('Drill_date', $request->date);
+        Session::put('Drill_location', $request->location);
+
         $styles = array("OK" => 'green', "NOK" => 'pink', "NA" => 'yellow', "OFF"=>'white');
 
         $date_loc = array('date'=>$request->date, 'location'=>$request->location);
@@ -284,7 +304,7 @@ class ScadaDrillingController extends Controller
         $VSAT = array();
         $GWay = array();
         $NA_count = count($drillReports);
-        
+
         foreach ($drillReports as $value) {
             $WITS[] = $value->WITSML_STATUS;
             $RigSn[] = $value->MDTOTCO_STATUS;

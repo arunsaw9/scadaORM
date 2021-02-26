@@ -75,7 +75,7 @@
 						</div> --}}
 						<br>
 						<div class="panel-body">
-							<table class="table table-bordered table-responsive">
+							<table class="table table-bordered table-responsive" id="mytable">
 								
 								<thead  class="thead-light">
 									<tr>
@@ -107,6 +107,7 @@
 						                <th scope="col">Gateway</th>
 						                <th scope="col">Remarks</th>
 						                <th scope="col">Date</th>
+						                <th scope="col">UpdatedBy</th>
 						                <th></th>
 						            </tr>
 								</thead>
@@ -215,7 +216,15 @@
 					>
 					    <button type="button" data-toggle="tooltip" class="toptip {{ $rem_style }}"  title="{{ $drillings->REMARKS3 }}">Remarks3</button>
 					</td>
-					<td>{{ $drillings->created_at }}</td>
+
+					<td>{{ $drillings->created_at }}
+						<span class="created" id="{{ $drillings->created_at }}" ></span>
+					</td>
+					{{-- <td>{{ $drillings->updated_by }}</td> --}}
+					<td class="users">
+						<span class="tdcls" id="{{ $drillings->id }}" style="cursor: pointer;">User</span>
+						<input type="hidden" value="flagmark" id="drillings">
+					</td>
 				</tr>
 				@endforeach
 				
@@ -232,6 +241,40 @@
 	</div>
 	<!-- END MAIN CONTENT -->
 </div>
+
+
+<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content modal-lg-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Users CPF</h4>
+        </div>
+        <div class="modal-body">
+        	<table class="table table-bordered table-responsive">
+				<thead  class="thead-light">
+					<tr>
+						<td class="text-center">First</td>
+						<td class="text-center">Second</td>
+						<td class="text-center">Third</td>
+					</tr>
+					<tr class="scadacpf">
+						
+					</tr>
+				</thead>
+			</table>
+        </div>
+        {{-- <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div> --}}
+      </div>
+      
+    </div>
+  </div>
+
 
 @endsection
 

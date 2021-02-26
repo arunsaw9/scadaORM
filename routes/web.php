@@ -38,6 +38,8 @@ Route::resource('/scadaproduction', 'ScadaProductionController');
 Route::get('/ReportsProd', 'ScadaProductionController@ProductionReports');
 Route::post('/ReportsProd', 'ScadaProductionController@ReportsProd')->name('production.reports');
 
+
+
 Route::get('/LocalReportProd', 'ScadaProductionController@LocalReportProd')->name('LocalReport');
 Route::post('/LocalReportProd/', 'ScadaProductionController@LocalReportProdData')->name('LocalReport.post');
 //Route::post('/LocalReportProd/{val1}/{val2}', 'ScadaProductionController@LocalReportProdData');
@@ -58,8 +60,16 @@ Route::get('/LocalDrillReport', 'ScadaDrillingController@DrillReports')->name('s
 Route::post('/LocalDrillReport', 'ScadaDrillingController@DrillReportshow')->name('drill.reports');
 
 
+Route::get('/Export-ReportsProd', 'OrmController@Export_ReportsProd')->name('Export.ReportsProd');
+Route::get('/Export-DrillReport', 'OrmController@Export_LocalDrillReport')->name('Export.LocalDrillReport');
+
 Route::post('/subasset/{id}', 'OrmController@subasset');
 Route::post('/dril-subasset/{id}', 'OrmController@drilSubasset');
+
+Route::post('/user-cpf/{id1}{id2}', 'OrmController@UserCPF');
+
+
+Route::get('test', 'OrmController@test');
 
 Route::view('/admin', 'orm.index');
 

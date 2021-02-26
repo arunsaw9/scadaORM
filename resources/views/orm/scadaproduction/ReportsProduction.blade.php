@@ -60,7 +60,7 @@
 						@else
 						
 						<div class="col-md-6">
-							<a href="#" class="btn btn-default" style="margin:10px 10px;">Export to Excel</a>
+							<a href="{{ route('Export.ReportsProd') }}" class="btn btn-default" style="margin:10px 10px;">Export to Excel</a>
 						</div>
 						<!-- 
 						<div class="panel-heading">

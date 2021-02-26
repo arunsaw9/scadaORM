@@ -83,6 +83,7 @@
 								    <label for="name" style="margin-left: 1%;">GatewayIP</label>
 								    <input type="text" name="SwitchIP" class="form-control" value="{{ $prod_update->switch_IP }}" placeholder="GatewayIP">
 								</div>
+								<input type="hidden" name="created_at" value="{{ $prod_update->created_at }}">
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">

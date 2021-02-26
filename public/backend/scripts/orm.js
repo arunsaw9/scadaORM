@@ -106,7 +106,71 @@ $(document).ready(function(){
         }
     });
 
+    //++++++++++++++++++++++++++++ Get Drilling Users CPF ++++++++++++++++++++++++
+    $(".tdcls").click(function(e){
+        e.preventDefault();
+        var id1 = $(this).attr('id');
 
+        var currentRow=$(this).closest("tr"); 
+        var id2=currentRow.find("td:eq(21)").text();
+
+        var flag = $('#flagmark').val(); 
+
+           
+
+
+        if (id1 != '') {
+            alert('dddd '+ drill);
+            var token = $('meta[name="csrf-token"]').attr('content');
+            var url = '/user-cpf/' + id1 +'&'+ id2;
+            $.ajax({
+                method:'POST',
+                header:{
+                  'X-CSRF-TOKEN': token
+                },
+                url: url,
+                data:{
+                  _token: token,
+                  dataType: 'json', 
+                  contentType:'application/json',
+                  id1: id1,
+                  id2: id2,
+                }        
+            })
+            .done(function(data){
+                //console.log(data);
+                $('#my-modal').modal({
+                    show: 'false'
+                }); 
+                $('.scadacpf').empty();
+
+                if (jQuery.isEmptyObject(data)==true) {
+
+                    $('.scadacpf').append('<td class="text-center" colspan="3">No data found.</td>');
+                    $('#myModal').modal('show'); 
+                }else{
+                    for(var i in data){
+                        let dateObj = new Date(data[i].created_at);
+                        let myDate =   (dateObj.getMonth() + 1)+ "/" + (dateObj.getUTCDate()) + "/" + (dateObj.getUTCFullYear()); 
+                        
+                        let myTime =   (dateObj.getUTCHours())+ ":" +(dateObj.getUTCMinutes())+ ":" + (dateObj.getUTCSeconds()); 
+
+                        $('.scadacpf').append('<td>'+ data[i].cpf_no +' '+ myTime +' '+ myDate + '</td>');
+                    }
+                    $('#myModal').modal('show'); 
+                }
+               
+            })
+            .fail(function(response){
+                alert('Error: ' + response);
+                console.log(response);
+            })
+        }
+      
+
+    });
+
+    
     //--------------------------LocalReportProd---------------------------
 
     // $("#LocalReportSubmit").click(function(e){

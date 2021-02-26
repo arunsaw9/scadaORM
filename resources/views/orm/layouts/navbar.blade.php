@@ -21,7 +21,7 @@
 					<ul class="nav navbar-nav navbar-right">
 						
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ asset('backend/img/user.png') }}" class="img-circle" alt="Avatar"> <span>{{ Auth::user()->name }} </span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ asset('backend/img/user.png') }}" class="img-circle" alt="Avatar"> <span>hi</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
 							<ul class="dropdown-menu" style="    min-width: 110px;">
 								<!-- <li><a href="#"><i class="lnr lnr-user"></i> <span>My Profile</span></a></li -->
 							

@@ -33,56 +33,22 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    public function username() {
+
+        return 'CPF_NO';
+    }
+     
+
     public function authenticate()
     {
         $this->ensureIsNotRateLimited();
 
-        $ldapUser = Adldap::search()->where('sAMAccountName', $this->CPF_NO)->first();
-        $userDn = $ldapUser->distinguishedname[0];
+         $ldapUser = Adldap::search()->where('sAMAccountName', $this->CPF_NO)->first();
+        
+        //$userDn = $ldapUser->distinguishedname[0];
         $provider = \Adldap::getProvider('default');
-
-        // try {
-
-        //     if ($provider->auth()->attempt($userDn, $this->password, true)) {
-        //         echo json_encode(
-        //             array (
-        //                 'login' => true
-        //             )
-        //         );
-        //     } else {
-        //         echo json_encode(
-        //             array (
-        //                 'login' => false,
-        //                 'message' => 'Error message here.'
-        //             )
-        //         );
-        //     }
-        // } catch (Adldap\Auth\UsernameRequiredException $e) {
-        //     // The user didn't supply a username.
-        // } catch (Adldap\Auth\PasswordRequiredException $e) {
-        //     // The user didn't supply a password.
-        // }
-
-        // die;
-
-        // if(Adldap::auth()->attempt($userDn, $this->password, true)) {
-        //     dd('working'); 
-        // }
-        // else
-        // {
-        //     $provider = \Adldap::getProvider('default' );
-        //     if ($provider->auth()->attempt($userDn, $this->password, true)) {
-        //         echo "work";
-        //     }else{
-        //         echo "no";
-        //         dd($provider);
-        //     }
-        //     // dd($provider->search()->users()->get(;));  //empty Collection
-        //     // dd($provider->search()->all()); 
-        // } 
-
-        // die;
-
+       
+       
         $credentials = [
             'CPF_NO' => $this->CPF_NO,
             'password' => $this->password,
@@ -99,6 +65,9 @@ class LoginRequest extends FormRequest
         RateLimiter::clear($this->throttleKey());
     }
 
+
+
+   
 
 
     /**
@@ -124,26 +93,26 @@ class LoginRequest extends FormRequest
      */
     // public function authenticate()
     // {
-    //     $this->ensureIsNotRateLimited();
+    //     //     $this->ensureIsNotRateLimited();
 
-    //     if (! Auth::attempt($this->only('CPF_NO', 'password'), $this->filled('remember'))) {
-    //         RateLimiter::hit($this->throttleKey());
+    //     //     if (! Auth::attempt($this->only('CPF_NO', 'password'), $this->filled('remember'))) {
+    //     //         RateLimiter::hit($this->throttleKey());
 
-    //         throw ValidationException::withMessages([
-    //             'CPF_NO' => __('auth.failed'),
-    //         ]);
-    //     }
+    //     //         throw ValidationException::withMessages([
+    //     //             'CPF_NO' => __('auth.failed'),
+    //     //         ]);
+    //     //     }
 
-    //     // if (Auth::attempt($this->only(['CPF_NO', 'password']))) {
+    //     //     // if (Auth::attempt($this->only(['CPF_NO', 'password']))) {
 
-    //     //         // Returns \App\User model configured in `config/auth.php`.
-    //     //         $user = Auth::user();
-    //     //         dump($user);
-    //     //         dd('Logged in!');
-    //     // }
+    //     //     //         // Returns \App\User model configured in `config/auth.php`.
+    //     //     //         $user = Auth::user();
+    //     //     //         dump($user);
+    //     //     //         dd('Logged in!');
+    //     //     // }
 
-        
-    //     RateLimiter::clear($this->throttleKey());
+            
+    //     //     RateLimiter::clear($this->throttleKey());
     // }
 
     /**

@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\ScadaProduction;
 use App\Models\Asset;
 use App\Models\subAsset;
+use App\Models\UserActivity;
 use Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Session;
 
 class ScadaProductionController extends Controller
 {
@@ -29,6 +31,7 @@ class ScadaProductionController extends Controller
 
     public function index()
     {
+
         $s_production = ScadaProduction::all();
         $styles = array("OK" => 'green', "NOK" => 'pink', "NA" => 'yellow', "OFF"=>'white');
         return view('orm.scadaproduction.index', compact('s_production', 'styles'));
@@ -266,8 +269,6 @@ class ScadaProductionController extends Controller
             'subAsset.required' => 'Instaltion  is required.', 
         ]);
 
-
-
         
         $prod_updt = ScadaProduction::find($id);
         $prod_updt->asset               = $request->asset;
@@ -291,9 +292,29 @@ class ScadaProductionController extends Controller
         $prod_updt->others_status       = $request->OthersStatus;
         $prod_updt->remarks2            = $request->remarks2;
         $prod_updt->updated_by          =  Auth::user()->CPF_NO;
+   
 
-        $prod_updt->save();
-        return redirect()->route('scadaproduction.index')->with('success', 'Data udatated successfully.');
+        if ($prod_updt->save()) {
+            $message = '';
+            $user = UserActivity::where('cpf_no', Auth::user()->CPF_NO)
+                            ->whereDate('created_at', '=', Carbon::now())
+                            ->get()->toArray();
+                            
+            if (count($user) > 0) {
+               $message = 'nOT OK';
+            }else{
+                $User_Act = new UserActivity;
+                $User_Act->production_id = $id;
+                $User_Act->cpf_no = Auth::user()->CPF_NO;
+                $User_Act->save();
+                $message = 'Data Updated successfully.';
+            }
+
+        }else{
+            $message = 'Data not Updated.';
+        }
+
+        return redirect()->route('scadaproduction.index')->with('success', $message);
     }
 
     /**
@@ -354,6 +375,10 @@ class ScadaProductionController extends Controller
     public function ReportsProd(request $request){
 
         //return $request->all();
+
+        Session::put('ReportsProdDate', $request->date);
+        Session::put('ReportsProdAsset', $request->location);
+
         $styles = array("OK" => 'green', "NOK" => 'pink', "NA" => 'yellow', "OFF"=>'white');
 
         $date_loc = array('date'=>$request->date, 'location'=>$request->location);

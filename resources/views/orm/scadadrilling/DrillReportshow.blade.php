@@ -26,10 +26,11 @@
 				<div class="col-md-12">
 					<div class="panel">
 					<div class="panel-heading">
+						@include('orm.includes.error')
 						<h3 style="padding-left: 10px;">
-					LocalDrillReport results of 
-					Date: <label for="date">{{ $date_loc['date'] }}</label> and 
-					Location: <label for="date">{{ $date_loc['location'] }}</label>
+							LocalDrillReport results of 
+							Date: <label for="date">{{ $date_loc['date'] }}</label> and 
+							Location: <label for="date">{{ $date_loc['location'] }}</label>
 						</h3>
 						<div class="right">
 						
@@ -54,6 +55,9 @@
 						</div>
 						@else
 						
+						<div class="col-md-6">
+							<a href="{{ route('Export.LocalDrillReport') }}" class="btn btn-default" style="margin:10px 10px;">Export to Excel</a>
+						</div>
 						
 						<br>
 						<div class="panel-body">
@@ -65,6 +69,7 @@
 									      <td class="text-center" colspan="4">OT remarks</td>
 									      <td class="text-center" colspan="4"> Communication</td>
 									</tr>
+
 						            <tr>
 						            	<th>S.N.</td>
 			                            <th scope="col">Asset</th>
